@@ -1,0 +1,49 @@
+<div class="container">
+    <h2>Robot Game</h2>
+
+    <div class="span-6">
+        <table class="square-cell table-bordered">
+            <tr ng-repeat="row in map">
+                <td ng-repeat="cell in row">{{cell}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="span6">
+
+        <h3>f1</h3>
+        <table class="table-bordered square-cell function">
+        	<tr>
+                <td ng-repeat="move in f1" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
+                    {{move.command}}
+                </td>
+        	</tr>
+        </table>
+
+        <h3>f2</h3>
+        <table class="table-bordered square-cell function">
+        	<tr>
+                <td ng-repeat="move in f2" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
+                    {{move.command}}
+                </td>
+        	</tr>
+        </table>
+    </div>
+
+    <div class="span12 prepend-top">
+        <input type="button" value="evaluate" name="evaluate" id="evaluate" class="btn btn-success" ng-click="evaluate()">
+    </div>
+
+    <div class="span12">
+        <h3>Moves</h3>
+        <table class="table-bordered square-cell moves">
+        	<tr>
+                <td ng-repeat="move in moves" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
+                    {{move.command}}
+                </td>
+        	</tr>
+        </table>
+    </div>
+
+</div>
+
