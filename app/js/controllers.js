@@ -10,21 +10,37 @@ function RobotCtrl($scope, $document) {
     $scope.f1     =  [];
     $scope.f2     =  [];
 
-    $scope.map = [['#', 'o', 'o', 'o', 'o'],
-                  ['o', 'o', 'x', 'o', 'o'],
-                  ['o', 'o', '*', 'x', '*']];
+    $scope.map = [['robot', 'empty', 'empty', 'empty', 'empty'],
+                  ['empty', 'empty', 'wall', 'empty', 'empty'],
+                  ['empty', 'empty', 'goal', 'wall', 'goal']];
 
     $scope.selected = null;
     $scope.robot = {x : 0, y : 0, vX : 0, vY : 1};
+
+    $scope.commands = [{code : 'Up', label : 'Forward'},
+                       {code : 'Rt', label : 'Right 90'},
+                       {code : 'Lt', label : 'Left 90'},
+                       {code : 'f1', label : 'Function 1'},
+                       {code : 'f2', label : 'Function 2'}];
 
     $scope.selectNode = function(move) {
         $scope.selected = move;
     };
 
+    $scope.setCommand = function(command) {
+        if ($scope.selected == null) {
+            return;
+        }
+        $scope.selected.command = command.code;
+    };
+
     $scope.evaluate = function() {
+        resetGame();
         var robot = $scope.robot;
-        resetRobot(robot);
-        _.each($scope.moves, function(move) {
+
+        var moveQueue = _.compact($scope.moves);
+        while (moveQueue.length > 0) {
+            var move = moveQueue.shift();
             switch (move.command) {
                 case 'Up':
                     robot.x = Math.min(Math.max(robot.x + robot.vX, 0), MAX_X - 1);
@@ -40,26 +56,37 @@ function RobotCtrl($scope, $document) {
                     robot.vX  = robot.vY;
                     robot.vY  = -oldVX;
                     break;
+                case 'f1':
+                    appendToMoveQueue(moveQueue, $scope.f1);
+                    break;
+                case 'f2':
+                    appendToMoveQueue(moveQueue, $scope.f2);
+                    break;
             }
-            $scope.map[robot.y][robot.x] = '#';    
+            $scope.map[robot.y][robot.x] = 'empty';    
             if (finished($scope.map)) {
                 console.log("WOOOOOO");
             }
-            console.log("x: " + robot.x + ", y: " + robot.y);
-
-        });
+        }
+        $scope.map[robot.y][robot.x] = 'robot';    
     };
 
-    function resetRobot(robot) {
-        robot.x  = 0, robot.y  = 0;
-        robot.vX = 0, robot.vY = 1;
+    function appendToMoveQueue(moveQueue, funQueue) {
+        _.each(funQueue, function(move) {
+            moveQueue.push(move);
+        });
+    }
+
+    function resetGame() {
+        $scope.robot = $scope.startingRobot;
+        $scope.map = $scope.startingMap;
     }
 
     function finished(map) {
         var finished = true;
         _.each(map, function(col) {
             _.each(col, function(cell) {
-                if (cell == '*') {
+                if (cell == 'goal') {
                     finished = false;
                 }
             });
@@ -67,13 +94,8 @@ function RobotCtrl($scope, $document) {
         return finished;
     }
 
-    function createMove() {
-        return {command : ''};
-    }
-
     function keyPressHandler(event) {
         var code = null;
-        console.log(event.keyCode);
         switch(event.keyCode) {
             case 38: // up
                 code = 'Up'; break;
@@ -81,13 +103,16 @@ function RobotCtrl($scope, $document) {
                 code = 'Lt'; break;
             case 39: // right
                 code = 'Rt'; break;
-            case 32:
+            case 49: // 1
+                code = 'f1'; break;
+            case 50: // 2
+                code = 'f2'; break;
+            case 32: // space
                 code = ''; break;
         }
         if (code !== null && $scope.selected !== null) {
             $scope.$apply(function() {
                 $scope.selected.command = code;
-                console.log($scope.selected);
             });
         }
     }
@@ -98,7 +123,14 @@ function RobotCtrl($scope, $document) {
         $scope.f2    = _.map(_.range(4),  createMove);
 
         $document.bind('keyup', function(event) { keyPressHandler(event); });
+        $scope.startingMap = $scope.map;
+        $scope.startingRobot = $scope.robot;
     } 
+
+    function createMove() {
+        return {command : ''};
+    }
+
     init();
 
 }

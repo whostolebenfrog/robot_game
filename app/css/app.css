@@ -4,3 +4,8 @@
 
 .square-cell tr td {width: 60px; height: 60px; padding: 0px; border-spacing: 0px; border-bottom: 1px solid #DDD;}
 .selected {background-color: #C9EAF3;}
+
+.board-wall {background-color: #888888;}
+.board-empty {background-color: #ffffff;}
+.board-goal {background-color: #B3FF99;}
+.board-robot {background-color: #FFFFB5;}

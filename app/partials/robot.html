@@ -1,47 +1,55 @@
 <div class="container">
     <h2>Robot Game</h2>
 
-    <div class="span-6">
-        <table class="square-cell table-bordered">
-            <tr ng-repeat="row in map">
-                <td ng-repeat="cell in row">{{cell}}</td>
+    <div class="span9">
+        <div class="span4">
+            <table class="square-cell table-bordered">
+                <tr ng-repeat="row in map">
+                    <td ng-repeat="cell in row" class="board-{{cell}}"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="span4">
+            <table class="table-bordered square-cell function">
+                <tr>
+                    <td>f1</td>
+                    <td ng-repeat="move in f1" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
+                        {{move.command}}
+                    </td>
+                </tr>
+            </table>
+
+            <table class="prepend-top table-bordered square-cell function">
+                <tr>
+                    <td>f2</td>
+                    <td ng-repeat="move in f2" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
+                        {{move.command}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="span7 prepend-top">
+            <input type="button" value="evaluate" name="evaluate" id="evaluate" class="btn btn-success" ng-click="evaluate()">
+        </div>
+
+        <div class="span7">
+            <h3>Moves</h3>
+            <table class="table-bordered square-cell moves">
+                <tr>
+                    <td ng-repeat="move in moves" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
+                        {{move.command}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="span2">
+        <table class="table-bordered square-cell function">
+            <tr ng-repeat="command in commands" ng-click="setCommand(command)">
+                <td>{{command.label}}</td>
             </tr>
-        </table>
-    </div>
-
-    <div class="span6">
-
-        <h3>f1</h3>
-        <table class="table-bordered square-cell function">
-        	<tr>
-                <td ng-repeat="move in f1" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
-                    {{move.command}}
-                </td>
-        	</tr>
-        </table>
-
-        <h3>f2</h3>
-        <table class="table-bordered square-cell function">
-        	<tr>
-                <td ng-repeat="move in f2" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
-                    {{move.command}}
-                </td>
-        	</tr>
-        </table>
-    </div>
-
-    <div class="span12 prepend-top">
-        <input type="button" value="evaluate" name="evaluate" id="evaluate" class="btn btn-success" ng-click="evaluate()">
-    </div>
-
-    <div class="span12">
-        <h3>Moves</h3>
-        <table class="table-bordered square-cell moves">
-        	<tr>
-                <td ng-repeat="move in moves" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
-                    {{move.command}}
-                </td>
-        	</tr>
         </table>
     </div>
 
