@@ -8,7 +8,7 @@
 
 .board-wall {background-color: #888888;}
 .board-empty {background-color: #ffffff;}
-.board-goal {background-color: #B3FF99;}
-.board-robot {background-color: #FFFFB5;}
+.board-goal {background: #ffffff url('../img/goal.png') no-repeat center; background-size: 50%;}
+.board-robot {background: #ffffff url('../img/robot.png') no-repeat center; background-size: 70%;}
 
 .cell-image {width: 80%; height: 80%; padding-left: 5px;}

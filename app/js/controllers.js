@@ -46,6 +46,7 @@ function RobotCtrl($scope, $document) {
                     if ($scope.map[newY][newX] != 'wall') {
                         robot.x = newX;
                         robot.y = newY;
+                        moveRobotOnMap(robot, $scope.map);
                     }
                     break;
                 case 'Rt':
@@ -87,6 +88,17 @@ function RobotCtrl($scope, $document) {
         $scope.robot = {x : 0, y : 0, vX : 0, vY : 1};
     }
 
+    // TODO: this and finished() find a better way to iterate over a 2d array
+    function moveRobotOnMap(robot, map) {
+        for (var i = 0; i < map.length; i++) {
+            for (var j = 0; j < map[i].length; j++) {
+                if (map[i][j] == 'robot')
+                    map[i][j] =  'empty';
+            }
+        }
+        $scope.map[robot.y][robot.x] = 'robot';
+    }
+
     function finished(map) {
         for (var i = 0; i < map.length; i++) {
             for (var j = 0; j < map[i].length; j++) {
@@ -97,6 +109,8 @@ function RobotCtrl($scope, $document) {
         return true;
     }
 
+    // TODO: can we stop this from bubbling events?
+    // TODO: add these to shortcuts to the screen
     function keyPressHandler(event) {
         var code = null;
         switch(event.keyCode) {
