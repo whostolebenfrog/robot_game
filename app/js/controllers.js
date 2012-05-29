@@ -10,12 +10,10 @@ function RobotCtrl($scope, $document) {
     $scope.f1     =  [];
     $scope.f2     =  [];
 
-    $scope.map = [['robot', 'empty', 'empty', 'empty', 'empty'],
-                  ['empty', 'empty', 'wall', 'empty', 'empty'],
-                  ['empty', 'empty', 'goal', 'wall', 'goal']];
+    $scope.map = [];
 
     $scope.selected = null;
-    $scope.robot = {x : 0, y : 0, vX : 0, vY : 1};
+    $scope.robot = {};
 
     $scope.commands = [{code : 'Up', label : 'Forward'},
                        {code : 'Rt', label : 'Right 90'},
@@ -37,14 +35,18 @@ function RobotCtrl($scope, $document) {
     $scope.evaluate = function() {
         resetGame();
         var robot = $scope.robot;
-
         var moveQueue = _.compact($scope.moves);
+
         while (moveQueue.length > 0) {
             var move = moveQueue.shift();
             switch (move.command) {
                 case 'Up':
-                    robot.x = Math.min(Math.max(robot.x + robot.vX, 0), MAX_X - 1);
-                    robot.y = Math.min(Math.max(robot.y + robot.vY, 0), MAX_Y - 1);
+                    var newX = Math.min(Math.max(robot.x + robot.vX, 0), MAX_X - 1);
+                    var newY = Math.min(Math.max(robot.y + robot.vY, 0), MAX_Y - 1);
+                    if ($scope.map[newY][newX] != 'wall') {
+                        robot.x = newX;
+                        robot.y = newY;
+                    }
                     break;
                 case 'Rt':
                     var oldVY = robot.vY;
@@ -66,32 +68,33 @@ function RobotCtrl($scope, $document) {
             $scope.map[robot.y][robot.x] = 'empty';    
             if (finished($scope.map)) {
                 console.log("WOOOOOO");
+                break;
             }
         }
         $scope.map[robot.y][robot.x] = 'robot';    
     };
 
     function appendToMoveQueue(moveQueue, funQueue) {
-        _.each(funQueue, function(move) {
-            moveQueue.push(move);
+        _.each(funQueue.slice(0).reverse(), function(move) {
+            moveQueue.unshift(move);
         });
     }
 
     function resetGame() {
-        $scope.robot = $scope.startingRobot;
-        $scope.map = $scope.startingMap;
+        $scope.map = [['robot', 'empty', 'empty', 'empty', 'empty'],
+                      ['empty', 'empty', 'wall', 'empty', 'empty'],
+                      ['empty', 'empty', 'goal', 'wall', 'goal']];
+        $scope.robot = {x : 0, y : 0, vX : 0, vY : 1};
     }
 
     function finished(map) {
-        var finished = true;
-        _.each(map, function(col) {
-            _.each(col, function(cell) {
-                if (cell == 'goal') {
-                    finished = false;
-                }
-            });
-        });
-        return finished;
+        for (var i = 0; i < map.length; i++) {
+            for (var j = 0; j < map[i].length; j++) {
+                if (map[i][j] == 'goal')
+                    return false;
+            }
+        }
+        return true;
     }
 
     function keyPressHandler(event) {
@@ -123,8 +126,7 @@ function RobotCtrl($scope, $document) {
         $scope.f2    = _.map(_.range(4),  createMove);
 
         $document.bind('keyup', function(event) { keyPressHandler(event); });
-        $scope.startingMap = $scope.map;
-        $scope.startingRobot = $scope.robot;
+        resetGame();
     } 
 
     function createMove() {
