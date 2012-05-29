@@ -15,7 +15,7 @@
                 <tr>
                     <td>f1</td>
                     <td ng-repeat="move in f1" ng-click="selectNode(move)" ng-class="(move == selected) && 'selected'">
-                        {{move.command}}
+                        <img src="img/{{move.command}}.png" class="cell-image" ng-class="(move.command == '') && 'hide'" />
                     </td>
                 </tr>
             </table>
