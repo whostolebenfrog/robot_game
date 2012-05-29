@@ -2,6 +2,16 @@
 
 /* Controllers */
 
+// TODO: rotate the robot graphic when appropriate
+// TODO: disable the evaluate button - use a param to enable?
+// TODO: how do we share this? screen share via hangout? or something cooler...
+// TODO: select the next cell on press
+// TODO: add some alias for shortcuts
+// TODO: animate the movement via delay?
+// TODO: juice!
+// TODO: fail and win message
+// TODO: clear
+// TODO: undo stack
 function RobotCtrl($scope, $document) {
     var MAX_X = 5;
     var MAX_Y = 3;
